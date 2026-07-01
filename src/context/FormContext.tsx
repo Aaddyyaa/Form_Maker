@@ -1,6 +1,22 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import type { ReactNode } from "react";
-import type { FormField, FieldType } from "../types/form";
+import type {
+  FormField,
+  FieldType,
+  FormData,
+} from "../types/form";
+
+import {
+  saveForm,
+  loadForm,
+  clearForm,
+} from "../services/storage";
 
 interface FormContextType {
   title: string;
@@ -9,27 +25,59 @@ interface FormContextType {
 
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setFields: React.Dispatch<React.SetStateAction<FormField[]>>;
+  setFields: React.Dispatch<
+    React.SetStateAction<FormField[]>
+  >;
 
   addField: (type: FieldType) => void;
-  updateField: (id: string, updated: Partial<FormField>) => void;
+  updateField: (
+    id: string,
+    updated: Partial<FormField>
+  ) => void;
+
   deleteField: (id: string) => void;
 
-  moveField: (oldIndex: number, newIndex: number) => void;
+  moveField: (
+    oldIndex: number,
+    newIndex: number
+  ) => void;
 
   resetForm: () => void;
 }
 
-const FormContext = createContext<FormContextType | undefined>(undefined);
+const FormContext =
+  createContext<FormContextType | undefined>(
+    undefined
+  );
 
 export const FormProvider = ({
   children,
 }: {
   children: ReactNode;
 }) => {
-  const [title, setTitle] = useState("Untitled Form");
-  const [description, setDescription] = useState("");
-  const [fields, setFields] = useState<FormField[]>([]);
+  const saved = loadForm();
+
+  const [title, setTitle] = useState(
+    saved?.title || "Untitled Form"
+  );
+
+  const [description, setDescription] = useState(
+    saved?.description || ""
+  );
+
+  const [fields, setFields] = useState<FormField[]>(
+    saved?.fields || []
+  );
+
+  useEffect(() => {
+    const form: FormData = {
+      title,
+      description,
+      fields,
+    };
+
+    saveForm(form);
+  }, [title, description, fields]);
 
   const addField = (type: FieldType) => {
     const newField: FormField = {
@@ -77,7 +125,10 @@ export const FormProvider = ({
     setFields((prev) => {
       const updated = [...prev];
 
-      const [removed] = updated.splice(oldIndex, 1);
+      const [removed] = updated.splice(
+        oldIndex,
+        1
+      );
 
       updated.splice(newIndex, 0, removed);
 
@@ -89,6 +140,8 @@ export const FormProvider = ({
     setTitle("Untitled Form");
     setDescription("");
     setFields([]);
+
+    clearForm();
   };
 
   return (

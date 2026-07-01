@@ -1,15 +1,24 @@
+import { useRef } from "react";
 import { useForm } from "../../context/FormContext";
 import { validateForm } from "../../utils/validators";
+import {
+  exportForm,
+  importForm,
+} from "../../services/storage";
+import type { FormData } from "../../types/form";
 
 const Toolbar = () => {
   const {
-    fields,
     title,
     description,
+    fields,
     setTitle,
     setDescription,
+    setFields,
     resetForm,
   } = useForm();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleValidate = () => {
     const errors = validateForm(fields);
@@ -20,6 +29,38 @@ const Toolbar = () => {
     }
 
     alert(errors.join("\n"));
+  };
+
+  const handleExport = () => {
+    const form: FormData = {
+      title,
+      description,
+      fields,
+    };
+
+    exportForm(form);
+  };
+
+  const handleImport = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    try {
+      const form = await importForm(file);
+
+      setTitle(form.title);
+      setDescription(form.description);
+      setFields(form.fields);
+
+      alert("✅ Form imported successfully!");
+    } catch {
+      alert("Invalid JSON file.");
+    }
+
+    event.target.value = "";
   };
 
   return (
@@ -42,25 +83,51 @@ const Toolbar = () => {
           className="w-full resize-none rounded-lg border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500 outline-none"
         />
 
+        <p className="mt-3 text-sm text-green-600">
+          💾 Auto Saved
+        </p>
+
       </div>
 
-      <div className="flex gap-3 ml-8">
+      <div className="flex gap-3 ml-8 flex-wrap">
 
         <button
           onClick={handleValidate}
-          className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-semibold transition"
+          className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-semibold"
         >
           Validate
         </button>
 
         <button
+          onClick={handleExport}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-semibold"
+        >
+          Export
+        </button>
+
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-semibold"
+        >
+          Import
+        </button>
+
+        <button
           onClick={resetForm}
-          className="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg font-semibold transition"
+          className="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg font-semibold"
         >
           Reset
         </button>
 
       </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        hidden
+        onChange={handleImport}
+      />
 
     </div>
   );
