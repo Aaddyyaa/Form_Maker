@@ -1,6 +1,5 @@
 import type { FormField } from "../../types/form";
 import { useForm } from "../../context/FormContext";
-import "./OptionEditor.css";
 
 interface Props {
   field: FormField;
@@ -35,28 +34,44 @@ const OptionEditor = ({ field }: Props) => {
   };
 
   return (
-    <div className="option-editor">
-      <h4>Options</h4>
+    <div className="border-t pt-5 mt-5">
 
-      {options.map((option, index) => (
-        <div className="option-row" key={index}>
-          <input
-            value={option}
-            onChange={(e) => updateOption(index, e.target.value)}
-          />
+      <h4 className="text-lg font-semibold mb-4">
+        Options
+      </h4>
 
-          <button
-            className="delete-option"
-            onClick={() => deleteOption(index)}
-          >
-            ✕
-          </button>
-        </div>
-      ))}
+      <div className="space-y-3">
 
-      <button className="add-option" onClick={addOption}>
+        {options.map((option, index) => (
+          <div key={index} className="flex gap-3">
+
+            <input
+              value={option}
+              onChange={(e) =>
+                updateOption(index, e.target.value)
+              }
+              className="flex-1 border rounded-lg p-3"
+            />
+
+            <button
+              onClick={() => deleteOption(index)}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 rounded-lg"
+            >
+              ✕
+            </button>
+
+          </div>
+        ))}
+
+      </div>
+
+      <button
+        onClick={addOption}
+        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
+      >
         + Add Option
       </button>
+
     </div>
   );
 };

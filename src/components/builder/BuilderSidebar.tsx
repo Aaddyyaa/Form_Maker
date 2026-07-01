@@ -1,6 +1,5 @@
 import type { FieldType } from "../../types/form";
 import { useForm } from "../../context/FormContext";
-import "./BuilderSidebar.css";
 
 const fieldTypes: {
   label: string;
@@ -22,18 +21,26 @@ const BuilderSidebar = () => {
   const { addField } = useForm();
 
   return (
-    <div className="builder-sidebar">
-      <h2>Add Fields</h2>
+    <div className="w-72 bg-white border-r p-6 overflow-y-auto">
 
-      {fieldTypes.map((field) => (
-        <button
-          key={field.type}
-          onClick={() => addField(field.type)}
-          className="sidebar-button"
-        >
-          + {field.label}
-        </button>
-      ))}
+      <h2 className="text-xl font-bold mb-6">
+        Add Fields
+      </h2>
+
+      <div className="space-y-3">
+
+        {fieldTypes.map((field) => (
+          <button
+            key={field.type}
+            onClick={() => addField(field.type)}
+            className="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white p-3 font-medium transition"
+          >
+            + {field.label}
+          </button>
+        ))}
+
+      </div>
+
     </div>
   );
 };

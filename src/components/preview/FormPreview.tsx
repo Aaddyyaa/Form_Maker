@@ -1,37 +1,50 @@
 import { useForm } from "../../context/FormContext";
 import FieldRenderer from "./FieldRenderer";
-import "./FormPreview.css";
 
 const FormPreview = () => {
   const { fields } = useForm();
 
   return (
-    <div className="form-preview">
-      <h2>Live Preview</h2>
+    <div className="w-[420px] bg-white border-l p-8 overflow-y-auto">
+
+      <h2 className="text-2xl font-bold mb-6">
+        Live Preview
+      </h2>
 
       {fields.length === 0 ? (
-        <p>No fields added.</p>
+        <div className="text-center text-gray-500 mt-20">
+          No fields added.
+        </div>
       ) : (
-        <form>
+        <form className="space-y-6">
+
           {fields.map((field) => (
-            <div className="preview-field" key={field.id}>
-              <label>
+            <div key={field.id}>
+
+              <label className="block font-semibold mb-2">
+
                 {field.label}
 
                 {field.required && (
-                  <span className="required">*</span>
+                  <span className="text-red-500 ml-1">*</span>
                 )}
+
               </label>
 
               {field.description && (
-                <small>{field.description}</small>
+                <p className="text-sm text-gray-500 mb-2">
+                  {field.description}
+                </p>
               )}
 
               <FieldRenderer field={field} />
+
             </div>
           ))}
+
         </form>
       )}
+
     </div>
   );
 };

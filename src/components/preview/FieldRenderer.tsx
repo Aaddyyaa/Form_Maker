@@ -4,6 +4,9 @@ interface Props {
   field: FormField;
 }
 
+const inputStyle =
+  "w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none";
+
 const FieldRenderer = ({ field }: Props) => {
   switch (field.type) {
     case "text":
@@ -17,6 +20,7 @@ const FieldRenderer = ({ field }: Props) => {
           placeholder={field.placeholder}
           defaultValue={field.defaultValue}
           required={field.required}
+          className={inputStyle}
         />
       );
 
@@ -26,45 +30,45 @@ const FieldRenderer = ({ field }: Props) => {
           placeholder={field.placeholder}
           defaultValue={field.defaultValue}
           required={field.required}
+          className={inputStyle}
         />
       );
 
     case "radio":
       return (
-        <>
-          {field.options?.map((option, index) => (
-            <label key={index}>
-              <input
-                type="radio"
-                name={field.id}
-                defaultChecked={field.defaultValue === option}
-              />
+        <div className="space-y-2">
+          {field.options?.map((option) => (
+            <label
+              key={option}
+              className="flex items-center gap-2"
+            >
+              <input type="radio" name={field.id} />
               {option}
             </label>
           ))}
-        </>
+        </div>
       );
 
     case "checkbox":
       return (
-        <>
-          {field.options?.map((option, index) => (
-            <label key={index}>
+        <div className="space-y-2">
+          {field.options?.map((option) => (
+            <label
+              key={option}
+              className="flex items-center gap-2"
+            >
               <input type="checkbox" />
               {option}
             </label>
           ))}
-        </>
+        </div>
       );
 
     case "select":
       return (
-        <select
-          defaultValue={field.defaultValue}
-          required={field.required}
-        >
+        <select className={inputStyle}>
           {field.options?.map((option) => (
-            <option key={option} value={option}>
+            <option key={option}>
               {option}
             </option>
           ))}
@@ -72,7 +76,12 @@ const FieldRenderer = ({ field }: Props) => {
       );
 
     case "file":
-      return <input type="file" />;
+      return (
+        <input
+          type="file"
+          className={inputStyle}
+        />
+      );
 
     default:
       return null;
