@@ -14,6 +14,9 @@ interface FormContextType {
   addField: (type: FieldType) => void;
   updateField: (id: string, updated: Partial<FormField>) => void;
   deleteField: (id: string) => void;
+
+  moveField: (oldIndex: number, newIndex: number) => void;
+
   resetForm: () => void;
 }
 
@@ -67,6 +70,21 @@ export const FormProvider = ({
     );
   };
 
+  const moveField = (
+    oldIndex: number,
+    newIndex: number
+  ) => {
+    setFields((prev) => {
+      const updated = [...prev];
+
+      const [removed] = updated.splice(oldIndex, 1);
+
+      updated.splice(newIndex, 0, removed);
+
+      return updated;
+    });
+  };
+
   const resetForm = () => {
     setTitle("Untitled Form");
     setDescription("");
@@ -87,6 +105,8 @@ export const FormProvider = ({
         addField,
         updateField,
         deleteField,
+        moveField,
+
         resetForm,
       }}
     >

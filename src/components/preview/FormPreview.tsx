@@ -5,7 +5,7 @@ const FormPreview = () => {
   const { fields } = useForm();
 
   return (
-    <div className="w-[420px] bg-white border-l p-8 overflow-y-auto">
+    <div className="w-105 bg-white border-l p-8 overflow-y-auto">
 
       <h2 className="text-2xl font-bold mb-6">
         Live Preview
